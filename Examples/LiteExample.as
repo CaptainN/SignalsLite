@@ -12,7 +12,7 @@ package
 	 * An example implementation of SignalLite. ExampleLite responds to signals from LiteFighter.
 	 * @author Kevin Newman
 	 */
-    [SWF(backgroundColor=0xEEEADB,frameRate=1000)]
+	[SWF(backgroundColor=0xEEEADB,frameRate=1000)]
 	public class LiteExample extends Sprite
 	{
 		private var punchCount:int;
@@ -25,8 +25,8 @@ package
 			var fighter:LiteFighter = new LiteFighter;
 			
 			display = new TextField();
-            display.autoSize = TextFieldAutoSize.LEFT;
-            addChild(display);
+			display.autoSize = TextFieldAutoSize.LEFT;
+			addChild(display);
 			
 			fighter.punched.add( gotPunched );
 			fighter.kicked.add( gotKicked );
@@ -42,22 +42,22 @@ package
 			
 			// performance
 			const FUNC_CALL_REPS:int = 1000000;
-            //const NUM_LISTENERS:int = 10;
+			//const NUM_LISTENERS:int = 10;
 			
 			var afterTime:int;
 			var beforeTime:int = getTimer();
-            for (var i:int = 0; i < FUNC_CALL_REPS; ++i)
-            {
-                fighter.punch();
+			for (var i:int = 0; i < FUNC_CALL_REPS; ++i)
+			{
+				fighter.punch();
 				fighter.kick();
-            }
+			}
 			afterTime = getTimer();
 			
 			var formatter:NumberFormatter = new NumberFormatter( LocaleID.DEFAULT );
 			formatter.useGrouping = true;
 			formatter.trailingZeros = false;
 			
-            display.appendText("Two Signals dispatched " + formatter.formatInt( FUNC_CALL_REPS ) + " times: (1 listener) time: " + (afterTime - beforeTime) + "\n");
+			display.appendText("Two Signals dispatched " + formatter.formatInt( FUNC_CALL_REPS ) + " times: (1 listener) time: " + (afterTime - beforeTime) + "\n");
 			display.appendText( "Got punched " + formatter.formatInt( punchCount ) + " time" + (1===punchCount?"":"s") + "!\n" );
 			display.appendText( "Got kicked " + formatter.formatInt( kickCount ) + " time" + (1 === kickCount?"":"s") + "!\n" );
 		}
