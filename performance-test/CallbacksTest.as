@@ -24,6 +24,8 @@ package
 		public var runnableSignal:RunnableSignal;
         public var funcs:Vector.<Function> = new Vector.<Function>();
         public var runnables:Vector.<Runnable> = new Vector.<Runnable>();
+		
+		public var genericSignal:GenericSignal;
  
         public function CallbacksTest()
         {
@@ -34,6 +36,8 @@ package
             this.signal = new Signal();
 			this.signalLite = new SignalLite();
 			this.runnableSignal = new RunnableSignal();
+			
+			this.genericSignal = new GenericSignal( KickableSlot );
  
             var i:int;
  
@@ -174,8 +178,19 @@ package
             {
                 this.runnableSignal.dispatchRunnable();
             }
-            logger.appendText("RunnableSignal (" + NUM_LISTENERS + " listeners) time: " + (getTimer() - beforeTime) + "\n");
+            logger.appendText("RunnableSignal (" + NUM_LISTENERS + " listeners) time: " + (getTimer() - beforeTime) + "\n\n");
 			
+			// GenericSignal - very fast on AVM2/JIT (almost as fast as RunnableSignal). Crazy slow on iOS/AOT!!
+			for (i = 0; i < NUM_LISTENERS; ++i)
+            {
+                this.genericSignal.addSlot(this["kslot"+i]);
+            }
+			beforeTime = getTimer();
+			for (i = 0; i < FUNC_CALL_REPS; ++i)
+			{
+				this.genericSignal.dispatch();
+			}
+            logger.appendText("GenericSignal (" + NUM_LISTENERS + " listeners) time: " + (getTimer() - beforeTime) + "\n");
         }
  
         private function dispatchFuncs(funcs:Vector.<Function>): void
@@ -229,6 +244,18 @@ package
 		private var slot8:RunnableSlot = new RunnableSlot();
 		private var slot9:RunnableSlot = new RunnableSlot();
 		
+		private var kslot0:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot1:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot2:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot3:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot4:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot5:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot6:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot7:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot8:KickableSlot = new KickableSlot( new GetKicked() );
+		private var kslot9:KickableSlot = new KickableSlot( new GetKicked() );
+		
+		
 		public function run():void {}
     }
 }
@@ -264,4 +291,37 @@ internal class RunnableSignal extends SignalTyped
 // A custom slot that will store the runnable object.
 internal class RunnableSlot extends SlotLite {
 	public var runnable:Runnable = new MyRunnable;
+}
+
+internal class GenericSignal extends SignalTyped
+{
+	protected var cls:Class;
+	function GenericSignal( aCls:Class ) {
+		last = first = new aCls( null );
+		cls = aCls;
+	}
+	
+	internal function dispatch():void
+	{
+		var node:* = first;
+		while ( node = (node.next) ) {
+			node.kickable.gotKicked();
+		}
+	}
+}
+internal interface IGetKicked 
+{
+	function gotKicked():void;
+}
+internal class GetKicked implements IGetKicked {
+	public function gotKicked():void {}
+}
+internal class KickableSlot extends SlotLite
+{
+	internal var kickable:IGetKicked;
+	
+	function KickableSlot( kickable:IGetKicked )
+	{
+		this.kickable = kickable;
+	}
 }
