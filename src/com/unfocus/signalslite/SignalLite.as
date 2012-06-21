@@ -39,15 +39,14 @@
 		{
 			if ( first === last ) return false;
 			
-			var node:SlotLite = first;
-			while ( node.next )
-			{
-				node = node.next;
-				if ( !node.next ) break;
-				if ( node.next.listener === listener ) {
+			var node:SlotLite = this.first;
+			do {
+				if ( node.next && node.next.listener === listener ) {
 					return true;
 				}
 			}
+			while( node = node.next );
+			
 			return false;
 		}
 		
