@@ -54,15 +54,14 @@ package com.unfocus.signalslite
 		{
 			if ( first === last ) return false;
 			
-			var node:SlotLite = first;
-			while ( node.next )
-			{
-				node = node.next;
-				if ( !node.next ) break;
-				if ( node.next === slot ) {
+			var node:SlotLite = this.first;
+			do {
+				if ( node === slot ) {
 					return true;
 				}
 			}
+			while( node = node.next );
+			
 			return false;
 		}
 		
