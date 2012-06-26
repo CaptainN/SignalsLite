@@ -5,5 +5,6 @@ package com.unfocus.signalslite
 	public class AllTests
 	{
 		public var signalTest:SignalTest;
+		public var signalContractTest:SignalContractTest;
 	}
 }
