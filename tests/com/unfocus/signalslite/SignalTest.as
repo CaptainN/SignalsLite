@@ -52,6 +52,15 @@ package com.unfocus.signalslite
 			assertTrue( signal.has( listener ) );
 		}
 		
+		[Test( description = "should have second and third listeners")]
+		public function has_second_and_third_listeners():void {
+			signal.add( listener );
+			signal.add( listener2 );
+			function listener3():void { }
+			signal.add( listener3 );
+			assertTrue( signal.has( listener2 ), signal.has( listener3 ) );
+		}
+		
 		[Test( description = "should have 1 listeners after adding 1 twice - length of 1")]
 		public function add_one_listener_two_times():void {
 			signal.add( listener );
